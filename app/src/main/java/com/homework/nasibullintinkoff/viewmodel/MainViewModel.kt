@@ -18,11 +18,27 @@ class MainViewModel @Inject constructor(
     private val repository: MainDataRepo
 ): ViewModel() {
 
+    private var currentPostIndex: Long = 0
+    var isFromLocal: Boolean = true
     val postDto: LiveData<Resource<PostDto>> get() = _postData
     private val _postData = MutableLiveData<Resource<PostDto>>()
 
+    fun doGetLocalData(){
+        viewModelScope.launch {
+            currentPostIndex += 1
+            isFromLocal = true
+            repository.getLocalData(currentPostIndex)
+                .catch { e ->
+                    _postData.value = Resource.error(e.toString())
+                }.collect {
+                    _postData.value = it
+                }
+        }
+    }
+
     fun doGetRemoteData(){
         viewModelScope.launch {
+            isFromLocal = false
             repository.getRemoteData()
                 .catch { e ->
                     _postData.value = Resource.error(e.toString())

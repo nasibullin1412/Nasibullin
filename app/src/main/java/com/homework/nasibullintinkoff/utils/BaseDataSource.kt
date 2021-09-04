@@ -1,5 +1,6 @@
 package com.homework.nasibullintinkoff.utils
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -28,6 +29,37 @@ abstract class BaseDataSource {
             }
         } catch (e: Exception) {
             Resource.error(e.message.toString())
+        }
+    }
+
+    /**
+     * generic for safe database call
+     */
+    suspend fun <T> getSafeLocalData(dbCall: suspend () -> T?): Resource<T> {
+        return try {
+            val result = dbCall()
+            if (result != null) {
+                Resource.success(result)
+            }
+            else{
+                Resource.failed("No data")
+            }
+        } catch (e: Exception) {
+            Resource.failed("Something went wrong, $e")
+        }
+    }
+
+    /**
+     * generic for safe database update
+     */
+    suspend fun updateDatabase(dbCall: suspend () ->Unit): Boolean{
+        return try {
+            dbCall()
+            true
+        }
+        catch (e: Exception){
+            Log.e("E/DB", e.message.toString())
+            false
         }
     }
 }
