@@ -111,6 +111,7 @@
                         app:shapeAppearanceOverlay="@style/round_image_style" />
 
                     <TextView
+                        android:id="@+id/tvDescription"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_alignStart="@id/imgGif"
