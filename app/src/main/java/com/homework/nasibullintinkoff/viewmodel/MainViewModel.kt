@@ -8,6 +8,7 @@ import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.repo.MainDataRepo
 import com.homework.nasibullintinkoff.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -18,12 +19,17 @@ class MainViewModel @Inject constructor(
     private val repository: MainDataRepo
 ): ViewModel() {
 
+    companion object{
+        private const val SHIMMER_WAIT = 1000
+    }
     private var currentPostIndex: Long = 0
     var isFromLocal: Boolean = true
     val postDto: LiveData<Resource<PostDto>> get() = _postData
     private val _postData = MutableLiveData<Resource<PostDto>>()
     val signalBackButton: LiveData<Boolean> get() =_signalBackButton
     private val _signalBackButton = MutableLiveData<Boolean>()
+    val signalShimmer: LiveData<Boolean> get() =_signalShimmer
+    private val _signalShimmer = MutableLiveData<Boolean>()
 
 
     fun doGetLocalData(){
@@ -41,12 +47,15 @@ class MainViewModel @Inject constructor(
     fun doGetRemoteData(){
         viewModelScope.launch {
             isFromLocal = false
+            _signalShimmer.value = true
             repository.getRemoteData()
                 .catch { e ->
                     _postData.value = Resource.error(e.toString())
                 }.collect {
                     _postData.value = it
                 }
+            delay(SHIMMER_WAIT.toLong())
+            _signalShimmer.value = false
         }
     }
 

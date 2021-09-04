@@ -77,7 +77,7 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/mcvGifCardView"
+                android:id="@+id/shmcvGifCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="500dp"
@@ -144,7 +144,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mcvGifCardView"
+                app:layout_constraintTop_toBottomOf="@id/shmcvGifCardView"
                 app:strokeColor="@color/black"/>
 
             <Button
@@ -160,7 +160,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mcvGifCardView"
+                app:layout_constraintTop_toBottomOf="@id/shmcvGifCardView"
                 app:strokeColor="@color/black"/>
 
             <Button
@@ -176,7 +176,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.8"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mcvGifCardView" />
+                app:layout_constraintTop_toBottomOf="@id/shmcvGifCardView" />
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="4dp"
@@ -254,4 +254,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/sflPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar"
+        >
+        <include
+            layout="@layout/shimmer_layout"
+            />
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
