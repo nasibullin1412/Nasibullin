@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval" >
+    <padding
+        android:top="10dp"/>
+    <size
+        android:width="42dp"
+        android:height="42dp" />
+    <solid
+        android:color="@color/custom_movie_card" />
+    <stroke
+        android:width="0.25dp"
+        android:color="@color/black" />
+
+</shape>
