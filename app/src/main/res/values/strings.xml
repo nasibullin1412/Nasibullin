@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">nasibullintinkoff</string>
+    <string name="app_name">Developers Life</string>
+    <string name="last_item">Послдение</string>
+    <string name="best_item">Лучшие</string>
+    <string name="hot_item">Горячие</string>
+    <string name="error_message">Произошла ошибка при загрузке данных. Проверьте подключение к сети</string>
+    <string name="repeat">Повторить</string>
 </resources>
