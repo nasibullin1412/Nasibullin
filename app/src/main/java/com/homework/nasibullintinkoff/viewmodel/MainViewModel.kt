@@ -22,10 +22,12 @@ class MainViewModel @Inject constructor(
     var isFromLocal: Boolean = true
     val postDto: LiveData<Resource<PostDto>> get() = _postData
     private val _postData = MutableLiveData<Resource<PostDto>>()
+    val signalBackButton: LiveData<Boolean> get() =_signalBackButton
+    private val _signalBackButton = MutableLiveData<Boolean>()
+
 
     fun doGetLocalData(){
         viewModelScope.launch {
-            currentPostIndex += 1
             isFromLocal = true
             repository.getLocalData(currentPostIndex)
                 .catch { e ->
@@ -46,5 +48,37 @@ class MainViewModel @Inject constructor(
                     _postData.value = it
                 }
         }
+    }
+
+    fun doInsertDatabase(postDto: PostDto){
+        viewModelScope.launch {
+            repository.insertToDatabase(postDto, currentPostIndex)
+        }
+    }
+
+    fun doDeleteAllCache(){
+        viewModelScope.launch {
+            repository.deleteAll()
+            currentPostIndex = 0
+            _signalBackButton.value = false
+        }
+    }
+
+    fun decreaseCurrentPostIndex(): Boolean {
+        when (currentPostIndex) {
+            0.toLong() -> return false
+            1.toLong() -> {
+                _signalBackButton.value = false
+            }
+        }
+        currentPostIndex -= 1
+        return true
+    }
+
+    fun increaseCurrentPostIndex(){
+        if (currentPostIndex == 0.toLong()){
+            _signalBackButton.value = true
+        }
+        currentPostIndex += 1
     }
 }

@@ -135,6 +135,7 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="30dp"
+                android:visibility="gone"
                 android:layout_marginBottom="100dp"
                 android:background="@drawable/btn_back_selector"
                 android:drawableLeft="@drawable/ic_left_arrow"

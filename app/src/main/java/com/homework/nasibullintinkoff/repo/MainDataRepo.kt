@@ -1,6 +1,7 @@
 package com.homework.nasibullintinkoff.repo
 
 import com.homework.nasibullintinkoff.App
+import com.homework.nasibullintinkoff.data.PostData
 import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.database.AppDatabase
 import com.homework.nasibullintinkoff.utils.BaseDataSource
@@ -32,5 +33,20 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
             val resultDto = Converters.fromPostDataToPostDto(result)
             emit(resultDto)
         }
+    }
+
+    suspend fun insertToDatabase(postDto: PostDto, id: Long){
+        val postData = PostData(
+            id = id,
+            urlGif = postDto.urlGif.toString(),
+            description = postDto.description,
+            author = postDto.author,
+            backId = postDto.id
+        )
+        updateSafeDatabase { AppDatabase.instance.postDao().insert(postData) }
+    }
+
+    suspend fun deleteAll(){
+        updateSafeDatabase { AppDatabase.instance.postDao().deleteAll() }
     }
 }

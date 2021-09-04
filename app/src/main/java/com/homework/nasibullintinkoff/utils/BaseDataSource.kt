@@ -52,7 +52,7 @@ abstract class BaseDataSource {
     /**
      * generic for safe database update
      */
-    suspend fun updateDatabase(dbCall: suspend () ->Unit): Boolean{
+    suspend fun updateSafeDatabase(dbCall: suspend () ->Unit): Boolean{
         return try {
             dbCall()
             true
