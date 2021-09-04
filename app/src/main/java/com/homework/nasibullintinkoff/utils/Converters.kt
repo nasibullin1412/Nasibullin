@@ -33,7 +33,7 @@ object Converters {
             Resource.success(
                 PostDto(
                     id = postData.data.id,
-                    urlGif = StringBuilder(postData.data.gifUrl),
+                    urlGif = StringBuilder(postData.data.urlGif),
                     description = postData.data.description,
                     author = postData.data.author
                 )
