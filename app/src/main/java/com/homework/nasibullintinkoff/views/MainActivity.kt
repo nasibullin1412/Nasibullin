@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity() {
             viewModel.doDeleteAllCache()
             viewModel.doGetLocalData()
         }
+        findViewById<TextView>(R.id.tvRepeat).setOnClickListener{
+            viewModel.doGetLocalData()
+        }
     }
 
     private fun previousPost(){
