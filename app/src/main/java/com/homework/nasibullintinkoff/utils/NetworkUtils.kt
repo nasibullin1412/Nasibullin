@@ -1,8 +1,8 @@
 package com.homework.nasibullintinkoff.utils
 
 import com.homework.nasibullintinkoff.BuildConfig
-import com.homework.nasibullintinkoff.utils.NetworkConstants.API_KEY
-import com.homework.nasibullintinkoff.utils.NetworkConstants.API_KEY_VALUE
+import com.homework.nasibullintinkoff.utils.NetworkConstants.JSON_KEY
+import com.homework.nasibullintinkoff.utils.NetworkConstants.JSON_VALUE
 import com.homework.nasibullintinkoff.utils.NetworkConstants.APPLICATION_JSON_TYPE
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -28,7 +28,7 @@ fun Retrofit.Builder.setClient() = apply {
 private fun OkHttpClient.Builder.addQueryInterceptor() = apply {
     val interceptor = Interceptor { chain ->
         var request = chain.request()
-        val url: HttpUrl = request.url.newBuilder().addQueryParameter(API_KEY, API_KEY_VALUE).build()
+        val url: HttpUrl = request.url.newBuilder().addQueryParameter(JSON_KEY, JSON_VALUE).build()
         request = request.newBuilder().url(url).build()
         chain.proceed(request)
     }
