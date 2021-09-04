@@ -11,6 +11,7 @@ import com.homework.nasibullintinkoff.viewmodel.MainViewModel
 import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.homework.nasibullintinkoff.App
 import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.utils.Resource
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nsvNormalConnection: NestedScrollView
     private lateinit var nsvErrorConnection: NestedScrollView
     private lateinit var btnBack: Button
+    private lateinit var shimmerFrameLayout: ShimmerFrameLayout
     private val viewModel: MainViewModel by viewModels()
 
     companion object{
@@ -41,7 +43,7 @@ class MainActivity : AppCompatActivity() {
     private fun init(){
         initView()
         setupButtons()
-        setupObserver()
+        setupObservers()
         viewModel.doGetLocalData()
     }
 
@@ -75,9 +77,25 @@ class MainActivity : AppCompatActivity() {
         nsvNormalConnection = findViewById(R.id.nsvNormalConnection)
         nsvErrorConnection = findViewById(R.id.nsvErrorConnection)
         btnBack = findViewById(R.id.btnBack)
+        shimmerFrameLayout = findViewById(R.id.sflPost)
     }
 
-    private fun setupObserver(){
+    private fun setupObservers(){
+        viewModel.signalShimmer.observe(
+            this, {
+                if (nsvErrorConnection.visibility != View.VISIBLE) {
+                    if (it) {
+                        nsvNormalConnection.visibility = View.GONE
+                        shimmerFrameLayout.visibility = View.VISIBLE
+                        shimmerFrameLayout.startShimmer()
+                    } else {
+                        shimmerFrameLayout.stopShimmer()
+                        nsvNormalConnection.visibility = View.VISIBLE
+                        shimmerFrameLayout.visibility = View.GONE
+                    }
+                }
+            }
+        )
         viewModel.signalBackButton.observe(
             this, {
                 if (it){
@@ -121,6 +139,7 @@ class MainActivity : AppCompatActivity() {
     private fun setErrorView(message: String){
         Utility.showToast(message, App.appContext)
         nsvNormalConnection.visibility = View.GONE
+        shimmerFrameLayout.visibility = View.GONE
         nsvErrorConnection.visibility = View.VISIBLE
     }
 
