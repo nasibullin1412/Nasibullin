@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.tabs.TabLayout
 import com.homework.nasibullintinkoff.App
 import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.utils.Resource
@@ -32,6 +33,7 @@ class MainActivity : AppCompatActivity() {
     companion object{
         private const val ERROR_MESSAGE = "Error get data"
         private const val FAILED_MESSAGE = "Fail get data"
+        private const val EMPTY_DATA = "Нет данных"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +49,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.doGetLocalData()
     }
 
-    private fun setupButtons(){
-        btnBack.setOnClickListener{
+    private fun setupButtons() {
+        btnBack.setOnClickListener {
             previousPost()
         }
         findViewById<Button>(R.id.btnNext).setOnClickListener {
@@ -59,13 +61,25 @@ class MainActivity : AppCompatActivity() {
             viewModel.doDeleteAllCache()
             viewModel.doGetLocalData()
         }
-        findViewById<TextView>(R.id.tvRepeat).setOnClickListener{
+        findViewById<TextView>(R.id.tvRepeat).setOnClickListener {
             viewModel.doGetLocalData()
         }
+        findViewById<TabLayout>(R.id.tabLayout).addOnTabSelectedListener(object :
+            TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                viewModel.changeCategory(tab.position)
+                viewModel.doGetLocalData()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                return
+            }
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                return
+            }
+        })
     }
-
-    private fun previousPost(){
-        if (viewModel.decreaseCurrentPostIndex().not()){
+    private fun previousPost() {
+        if (viewModel.decreaseCurrentPostIndex().not()) {
             return
         }
         viewModel.doGetLocalData()
@@ -122,10 +136,10 @@ class MainActivity : AppCompatActivity() {
             this, {
                 when(it.status){
                     Resource.Status.SUCCESS -> {
-                        if (it.data != null) {
+                        if (!it.data.isNullOrEmpty()) {
                             successGetData(it.data)
                         } else{
-                            Utility.showToast(FAILED_MESSAGE, App.appContext)
+                            unsuccessfulGetData(EMPTY_DATA)
                         }
                     }
                     Resource.Status.ERROR -> {
@@ -150,18 +164,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun setErrorView(message: String){
         Utility.showToast(message, App.appContext)
+        if (message == EMPTY_DATA){
+            findViewById<TextView>(R.id.tvErrorMessage)
+                .text = EMPTY_DATA
+        }
+        else{
+            findViewById<TextView>(R.id.tvErrorMessage)
+                .text = resources.getText(R.string.error_message)
+        }
         nsvNormalConnection.visibility = View.GONE
         shimmerFrameLayout.visibility = View.GONE
         nsvErrorConnection.visibility = View.VISIBLE
+
     }
 
-    private fun successGetData(postDto: PostDto){
+    private fun successGetData(postDtoList: List<PostDto>){
         nsvNormalConnection.visibility = View.VISIBLE
         nsvErrorConnection.visibility = View.GONE
-        Glide.with(this).asGif().load(postDto.urlGif.toString()).into(imgGif)
-        "${postDto.author}: ${postDto.description}".also { tvDescription.text = it }
+        Glide.with(this).asGif().load(postDtoList[0].urlGif.toString()).into(imgGif)
+        "${postDtoList[0].author}: ${postDtoList[0].description}".also { tvDescription.text = it }
         if (viewModel.isFromLocal.not()){
-            viewModel.doInsertDatabase(postDto)
+            viewModel.doInsertDatabase(postDtoList)
         }
     }
 }

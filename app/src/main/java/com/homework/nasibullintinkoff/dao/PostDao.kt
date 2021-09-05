@@ -10,20 +10,21 @@ interface PostDao {
      * @param id is id of post
      * @return post data
      */
-    @Query("SELECT * FROM posts WHERE post_id = :id")
-    suspend fun getPostById(id: Long): PostData
+    @Query("SELECT * FROM posts WHERE post_id = :id AND category_id = :category")
+    suspend fun getPostById(id: Long, category: Long): List<PostData>
 
     /**
      * insert new record for posts table
-     * @param postData is new record with new post data
+     * @param postDataList is list with new post data
      */
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(postData: PostData)
+    suspend fun insert(postDataList: List<PostData>)
 
     /**
      * delete all records in the table
      */
-    @Query("DELETE FROM posts")
-    suspend fun deleteAll()
+    @Query("DELETE FROM posts WHERE category_id = :category")
+    suspend fun deleteAll(category: Long)
+
 }

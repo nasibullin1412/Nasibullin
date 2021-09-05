@@ -8,41 +8,45 @@ import java.lang.StringBuilder
 object Converters {
     private const val ERROR_CONVERT = "Error convert"
 
-    fun fromPostResponseToPostDto(postResponse: Resource<PostResponse>)
-    : Resource<PostDto> =
-        postResponse.data?.let {
+    fun fromPostResponseToPostDto(postResponseList: Resource<PostResponse>)
+    : Resource<List<PostDto>> =
+        postResponseList.data?.let {
             Resource.success(
-                PostDto(
-                    id = postResponse.data.id,
-                    urlGif = StringBuilder(postResponse.data.gifURL).insert(4, 's'),
-                    description = postResponse.data.description,
-                    author = postResponse.data.author
-                )
+                it.result.map { postResponseItem ->
+                    PostDto(
+                        id = postResponseItem.id,
+                        urlGif = StringBuilder(postResponseItem.gifURL).insert(4, 's'),
+                        description = postResponseItem.description,
+                        author = postResponseItem.author
+                    )
+                }
             )
         }?:
-        if (Resource.Status.FAILURE == postResponse.status) Resource.failed(
-            postResponse.message?: ERROR_CONVERT
+        if (Resource.Status.FAILURE == postResponseList.status) Resource.failed(
+            postResponseList.message?: ERROR_CONVERT
         )
         else Resource.error(
-            postResponse.message?: ERROR_CONVERT
+            postResponseList.message?: ERROR_CONVERT
         )
 
-    fun fromPostDataToPostDto(postData: Resource<PostData>)
-    : Resource<PostDto> =
-        postData.data?.let {
+    fun fromPostDataToPostDto(postDataList: Resource<List<PostData>>)
+    : Resource<List<PostDto>> =
+        postDataList.data?.let {
             Resource.success(
-                PostDto(
-                    id = postData.data.id,
-                    urlGif = StringBuilder(postData.data.urlGif),
-                    description = postData.data.description,
-                    author = postData.data.author
-                )
+                it.map { postItem ->
+                    PostDto(
+                        id = postItem.postId,
+                        urlGif = StringBuilder(postItem.urlGif),
+                        description = postItem.description,
+                        author = postItem.author
+                    )
+                }
             )
         }?:
-        if (Resource.Status.FAILURE == postData.status) Resource.failed(
-            postData.message?: ERROR_CONVERT
+        if (Resource.Status.FAILURE == postDataList.status) Resource.failed(
+            postDataList.message?: ERROR_CONVERT
         )
         else Resource.error(
-            postData.message?: ERROR_CONVERT
+            postDataList.message?: ERROR_CONVERT
         )
 }

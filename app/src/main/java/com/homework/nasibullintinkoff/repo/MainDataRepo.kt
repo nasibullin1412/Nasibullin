@@ -6,6 +6,7 @@ import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.database.AppDatabase
 import com.homework.nasibullintinkoff.utils.BaseDataSource
 import com.homework.nasibullintinkoff.utils.Converters
+import com.homework.nasibullintinkoff.utils.NetworkConstants.PAGE_NUMBER
 import com.homework.nasibullintinkoff.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -20,9 +21,9 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
     /**
      * get remote post data with safe request
      */
-    fun getRemoteData(): Flow<Resource<PostDto>>{
+    fun getRemoteData(category: String, page: Long): Flow<Resource<List<PostDto>>>{
         return flow {
-            val result = safeApiCall { App.instance.apiService.getRandomPost() }
+            val result = safeApiCall { App.instance.apiService.getRandomPost(category, page) }
             val resultDto = Converters.fromPostResponseToPostDto(result)
             emit(resultDto)
         }.flowOn(Dispatchers.IO)
@@ -31,10 +32,10 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
     /**
      * get local post data with safe request
      */
-    fun getLocalData(id: Long): Flow<Resource<PostDto>>{
+    fun getLocalData(id: Long, category: Long): Flow<Resource<List<PostDto>>>{
         return flow {
             val result = getSafeLocalData {
-                AppDatabase.instance.postDao().getPostById(id)
+                AppDatabase.instance.postDao().getPostById(id, category)
             }
             val resultDto = Converters.fromPostDataToPostDto(result)
             emit(resultDto)
@@ -44,21 +45,26 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
     /**
      * safe insert post data to database
      */
-    suspend fun insertToDatabase(postDto: PostDto, id: Long){
-        val postData = PostData(
-            id = id,
-            urlGif = postDto.urlGif.toString(),
-            description = postDto.description,
-            author = postDto.author,
-            backId = postDto.id
-        )
-        updateSafeDatabase { AppDatabase.instance.postDao().insert(postData) }
+    suspend fun insertToDatabase(postDtoList: List<PostDto>, id: Long, category: Long){
+        val postDataList = ArrayList<PostData>()
+        postDtoList.forEachIndexed {index, element -> postDataList.add(
+            PostData(
+                id = null,
+                postId = id+index,
+                urlGif = element.urlGif.toString(),
+                description = element.description,
+                author = element.author,
+                backId = element.id,
+                categoryId = category
+            )
+        ) }
+        updateSafeDatabase { AppDatabase.instance.postDao().insert(postDataList) }
     }
 
     /**
      * safe delete all data from posts table
      */
-    suspend fun deleteAll(){
-        updateSafeDatabase { AppDatabase.instance.postDao().deleteAll() }
+    suspend fun deleteAll(category: Long){
+        updateSafeDatabase { AppDatabase.instance.postDao().deleteAll(category) }
     }
 }
