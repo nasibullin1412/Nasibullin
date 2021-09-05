@@ -6,7 +6,6 @@ import com.homework.nasibullintinkoff.data.PostDto
 import com.homework.nasibullintinkoff.database.AppDatabase
 import com.homework.nasibullintinkoff.utils.BaseDataSource
 import com.homework.nasibullintinkoff.utils.Converters
-import com.homework.nasibullintinkoff.utils.NetworkConstants.PAGE_NUMBER
 import com.homework.nasibullintinkoff.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow

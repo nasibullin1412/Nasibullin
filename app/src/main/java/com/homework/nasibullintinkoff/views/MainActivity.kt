@@ -45,10 +45,14 @@ class MainActivity : AppCompatActivity() {
     private fun init(){
         initView()
         setupButtons()
+        setupTabLayout()
         setupObservers()
         viewModel.doGetLocalData()
     }
 
+    /**
+     * setup buttons listeners
+     */
     private fun setupButtons() {
         btnBack.setOnClickListener {
             previousPost()
@@ -64,6 +68,18 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvRepeat).setOnClickListener {
             viewModel.doGetLocalData()
         }
+    }
+    private fun previousPost() {
+        if (viewModel.decreaseCurrentPostIndex().not()) {
+            return
+        }
+        viewModel.doGetLocalData()
+    }
+
+    /**
+     * setup tab layout listener
+     */
+    private fun setupTabLayout(){
         findViewById<TabLayout>(R.id.tabLayout).addOnTabSelectedListener(object :
             TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
@@ -78,12 +94,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    private fun previousPost() {
-        if (viewModel.decreaseCurrentPostIndex().not()) {
-            return
-        }
-        viewModel.doGetLocalData()
-    }
 
     private fun initView(){
         imgGif = findViewById(R.id.imgGif)
@@ -94,12 +104,19 @@ class MainActivity : AppCompatActivity() {
         shimmerFrameLayout = findViewById(R.id.sflPost)
     }
 
+    /**
+     * setup LiveData observers
+     */
     private fun setupObservers(){
         setupShimmerObserver()
         setupBackButtonObserver()
         setupDataObserver()
     }
 
+    /**
+     * setup shimmer observer.
+     * Change visibility of layouts after signaling
+     */
     private fun setupShimmerObserver(){
         viewModel.signalShimmer.observe(
             this, {
@@ -110,14 +127,18 @@ class MainActivity : AppCompatActivity() {
                         shimmerFrameLayout.startShimmer()
                     } else {
                         shimmerFrameLayout.stopShimmer()
-                        nsvNormalConnection.visibility = View.VISIBLE
                         shimmerFrameLayout.visibility = View.GONE
+                        nsvNormalConnection.visibility = View.VISIBLE
                     }
                 }
             }
         )
     }
 
+    /**
+     * setup back button observer.
+     * Change visibility of button after signaling
+     */
     private fun setupBackButtonObserver(){
         viewModel.signalBackButton.observe(
             this, {
@@ -131,6 +152,10 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * setup data update observer.
+     * View new output data after updating
+     */
     private fun setupDataObserver(){
         viewModel.postDto.observe(
             this, {
@@ -153,6 +178,10 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    /**
+     * handle unsuccessful get data
+     * @param message is string with the reason for the unsuccessful
+     */
     private fun unsuccessfulGetData(message:String){
         if (viewModel.isFromLocal){
             viewModel.doGetRemoteData()
@@ -162,6 +191,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * setup error view
+     * @param message is string with the reason for the error
+     */
     private fun setErrorView(message: String){
         Utility.showToast(message, App.appContext)
         if (message == EMPTY_DATA){
@@ -178,9 +211,15 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * setup view after success get new output data
+     * @param postDtoList is list with new data
+     */
     private fun successGetData(postDtoList: List<PostDto>){
-        nsvNormalConnection.visibility = View.VISIBLE
-        nsvErrorConnection.visibility = View.GONE
+        if (nsvErrorConnection.visibility == View.VISIBLE) {
+            nsvNormalConnection.visibility = View.VISIBLE
+            nsvErrorConnection.visibility = View.GONE
+        }
         Glide.with(this).asGif().load(postDtoList[0].urlGif.toString()).into(imgGif)
         "${postDtoList[0].author}: ${postDtoList[0].description}".also { tvDescription.text = it }
         if (viewModel.isFromLocal.not()){

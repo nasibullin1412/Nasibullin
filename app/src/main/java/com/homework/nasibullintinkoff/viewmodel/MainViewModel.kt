@@ -79,6 +79,7 @@ class MainViewModel @Inject constructor(
 
     /**
      *  asynchronous data insertion into the database
+     *  @param postDtoList it is list with new post data from backend
      */
     fun doInsertDatabase(postDtoList: List<PostDto>){
         viewModelScope.launch {
@@ -86,6 +87,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * asynchronous delete cache from database by current category
+     */
     fun doDeleteAllCache(){
         viewModelScope.launch {
             repository.deleteAll(category = currentCategory.value)
@@ -95,6 +99,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * do decrease current post index after back button pressed
+     */
     fun decreaseCurrentPostIndex(): Boolean {
         when (currentPostIndex) {
             0.toLong() -> return false
@@ -102,10 +109,16 @@ class MainViewModel @Inject constructor(
                 _signalBackButton.value = false
             }
         }
+        if (currentPostIndex % PAGE_NUMBER == 0.toLong()){
+            currentPageNumber -=1
+        }
         currentPostIndex -= 1
         return true
     }
 
+    /**
+     * do increase current post index after next button pressed
+     */
     fun increaseCurrentPostIndex(){
         if (currentPostIndex == 0.toLong()){
             _signalBackButton.value = true
@@ -116,6 +129,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * change category of posts
+     */
     fun changeCategory(newCategoryId: Int){
         when(newCategoryId){
             0 -> currentCategory = Category.LATEST

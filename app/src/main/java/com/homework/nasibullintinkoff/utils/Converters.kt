@@ -8,6 +8,9 @@ import java.lang.StringBuilder
 object Converters {
     private const val ERROR_CONVERT = "Error convert"
 
+    /**
+     * convert from Resource<PostResponse> to Resource<List<PostDto>>
+     */
     fun fromPostResponseToPostDto(postResponseList: Resource<PostResponse>)
     : Resource<List<PostDto>> =
         postResponseList.data?.let {
@@ -29,6 +32,9 @@ object Converters {
             postResponseList.message?: ERROR_CONVERT
         )
 
+    /**
+     * convert from Resource<List<PostData>> to Resource<List<PostDto>>
+     */
     fun fromPostDataToPostDto(postDataList: Resource<List<PostData>>)
     : Resource<List<PostDto>> =
         postDataList.data?.let {

@@ -1,6 +1,10 @@
 package com.homework.nasibullintinkoff.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import com.homework.nasibullintinkoff.data.PostData
 
 @Dao
@@ -22,7 +26,7 @@ interface PostDao {
     suspend fun insert(postDataList: List<PostData>)
 
     /**
-     * delete all records in the table
+     * delete records in the posts table by category
      */
     @Query("DELETE FROM posts WHERE category_id = :category")
     suspend fun deleteAll(category: Long)
