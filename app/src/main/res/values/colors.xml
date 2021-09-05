@@ -11,5 +11,5 @@
     <color name="custom_background">#E5E5E5</color>
     <color name="custom_movie_card">#F1F1F1</color>
     <color name="custom_shape">#5b5b5b</color>
-    <color name="color_shimmer">#E4E2E2</color>
+    <color name="color_shimmer">#dddddd</color>
 </resources>

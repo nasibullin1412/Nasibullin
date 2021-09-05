@@ -12,9 +12,11 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "posts")
 data class PostData(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val id: Long?,
     @ColumnInfo(name = "post_id")
-    val id: Long,
+    val postId: Long,
     @ColumnInfo(name = "url_gif", typeAffinity = TEXT)
     val urlGif: String,
     @ColumnInfo(name = "description", typeAffinity = TEXT)
@@ -22,5 +24,7 @@ data class PostData(
     @ColumnInfo(name = "author", typeAffinity = TEXT)
     val author: String,
     @ColumnInfo(name = "back_id", typeAffinity = INTEGER)
-    val backId: Long
+    val backId: Long,
+    @ColumnInfo(name = "category_id", typeAffinity = INTEGER)
+    val categoryId: Long
 )
