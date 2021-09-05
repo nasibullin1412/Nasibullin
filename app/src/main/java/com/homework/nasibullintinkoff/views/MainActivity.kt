@@ -81,6 +81,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupObservers(){
+        setupShimmerObserver()
+        setupBackButtonObserver()
+        setupDataObserver()
+    }
+
+    private fun setupShimmerObserver(){
         viewModel.signalShimmer.observe(
             this, {
                 if (nsvErrorConnection.visibility != View.VISIBLE) {
@@ -96,6 +102,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun setupBackButtonObserver(){
         viewModel.signalBackButton.observe(
             this, {
                 if (it){
@@ -106,6 +115,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun setupDataObserver(){
         viewModel.postDto.observe(
             this, {
                 when(it.status){

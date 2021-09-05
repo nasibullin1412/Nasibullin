@@ -17,6 +17,9 @@ import javax.inject.Singleton
 @Singleton
 class MainDataRepo @Inject constructor(): BaseDataSource() {
 
+    /**
+     * get remote post data with safe request
+     */
     fun getRemoteData(): Flow<Resource<PostDto>>{
         return flow {
             val result = safeApiCall { App.instance.apiService.getRandomPost() }
@@ -25,6 +28,9 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
         }.flowOn(Dispatchers.IO)
     }
 
+    /**
+     * get local post data with safe request
+     */
     fun getLocalData(id: Long): Flow<Resource<PostDto>>{
         return flow {
             val result = getSafeLocalData {
@@ -35,6 +41,9 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
         }
     }
 
+    /**
+     * safe insert post data to database
+     */
     suspend fun insertToDatabase(postDto: PostDto, id: Long){
         val postData = PostData(
             id = id,
@@ -46,6 +55,9 @@ class MainDataRepo @Inject constructor(): BaseDataSource() {
         updateSafeDatabase { AppDatabase.instance.postDao().insert(postData) }
     }
 
+    /**
+     * safe delete all data from posts table
+     */
     suspend fun deleteAll(){
         updateSafeDatabase { AppDatabase.instance.postDao().deleteAll() }
     }

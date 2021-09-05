@@ -32,6 +32,9 @@ class MainViewModel @Inject constructor(
     private val _signalShimmer = MutableLiveData<Boolean>()
 
 
+    /**
+     * asynchronous request to fetch data from the database
+     */
     fun doGetLocalData(){
         viewModelScope.launch {
             isFromLocal = true
@@ -44,6 +47,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     * asynchronous request to fetch data from the backend
+     */
     fun doGetRemoteData(){
         viewModelScope.launch {
             isFromLocal = false
@@ -59,6 +65,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    /**
+     *  asynchronous data insertion into the database
+     */
     fun doInsertDatabase(postDto: PostDto){
         viewModelScope.launch {
             repository.insertToDatabase(postDto, currentPostIndex)

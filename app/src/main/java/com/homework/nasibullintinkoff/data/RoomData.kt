@@ -6,6 +6,10 @@ import androidx.room.ColumnInfo.TEXT
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+/**
+ * data class of post abstraction,
+ * which is used with room
+ */
 @Entity(tableName = "posts")
 data class PostData(
     @PrimaryKey
