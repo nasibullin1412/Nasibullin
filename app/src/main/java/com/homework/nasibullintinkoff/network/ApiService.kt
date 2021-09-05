@@ -9,7 +9,9 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 
 interface ApiService {
-
+    /**
+     * Get random post
+     */
     @GET("random")
     suspend fun getRandomPost(): Response<PostResponse>
 
