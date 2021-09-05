@@ -10,6 +10,7 @@ import com.homework.nasibullintinkoff.R
 import com.homework.nasibullintinkoff.viewmodel.MainViewModel
 import androidx.activity.viewModels
 import androidx.core.widget.NestedScrollView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.tabs.TabLayout
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var nsvErrorConnection: NestedScrollView
     private lateinit var btnBack: Button
     private lateinit var shimmerFrameLayout: ShimmerFrameLayout
+    private lateinit var circularProgressDrawable: CircularProgressDrawable
     private val viewModel: MainViewModel by viewModels()
 
     companion object{
@@ -102,6 +104,11 @@ class MainActivity : AppCompatActivity() {
         nsvErrorConnection = findViewById(R.id.nsvErrorConnection)
         btnBack = findViewById(R.id.btnBack)
         shimmerFrameLayout = findViewById(R.id.sflPost)
+        circularProgressDrawable = CircularProgressDrawable(this)
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
     }
 
     /**
@@ -219,7 +226,11 @@ class MainActivity : AppCompatActivity() {
             nsvNormalConnection.visibility = View.VISIBLE
             nsvErrorConnection.visibility = View.GONE
         }
-        Glide.with(this).asGif().load(postDtoList[0].urlGif.toString()).into(imgGif)
+        Glide.with(this)
+            .asGif()
+            .load(postDtoList[0].urlGif.toString())
+            .placeholder(circularProgressDrawable)
+            .into(imgGif)
         "${postDtoList[0].author}: ${postDtoList[0].description}".also { tvDescription.text = it }
         if (viewModel.isFromLocal.not()){
             viewModel.doInsertDatabase(postDtoList)
