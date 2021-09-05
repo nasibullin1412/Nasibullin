@@ -208,7 +208,6 @@ class MainActivity : AppCompatActivity() {
         nsvNormalConnection.visibility = View.GONE
         shimmerFrameLayout.visibility = View.GONE
         nsvErrorConnection.visibility = View.VISIBLE
-
     }
 
     /**
