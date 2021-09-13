@@ -7,13 +7,17 @@ import com.homework.nasibullintinkoff.utils.setClient
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiService {
     /**
      * Get random post
      */
-    @GET("random")
-    suspend fun getRandomPost(): Response<PostResponse>
+    @GET("{category}/{page}")
+    suspend fun getRandomPost(
+        @Path("category") category: String,
+        @Path("page") page: Long
+    ): Response<PostResponse>
 
     companion object {
         fun create(): ApiService {
